@@ -1,0 +1,5 @@
+Select * from cached_query_708
+where new_current='New' 
+and Order_date>='{{Start Date}}' and Order_date<='{{End Date}}'
+group by name, Client_ID, order_id 
+order by order_date asc

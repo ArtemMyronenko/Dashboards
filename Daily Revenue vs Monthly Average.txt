@@ -1,0 +1,5 @@
+select selected_date, printf("%.0f", sum(monthly_revenue)) || "$" as 'Monthly Revenue', printf("%.0f", cached_query_712.avgrevenue) || "$" as 'Average Revenue' from cached_query_709 
+left join cached_query_708 on cached_query_709.selected_date=cached_query_708.order_date and cached_query_708.new_current='New' and Order_date>='{{Start Date}}' and Order_date<='{{End Date}}'
+left join cached_query_712 on cached_query_712.month=strftime('%m', cached_query_709.selected_date)
+group by selected_date
+having selected_date >= '{{Start Date}}' and selected_date <= '{{End Date}}'
