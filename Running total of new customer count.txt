@@ -3,7 +3,9 @@ as month,
 strftime('%d', selected_date) Day,
 selected_date 'Date',
 sum(numperday) over (partition by strftime('%m', selected_date) ORDER BY selected_date) 'New Customer ID Count' FROM 
-(select selected_date, case when client_id is null then 0 else count(distinct client_id) end as numperday from cached_query_709 
-LEFT JOIN cached_query_708 on cached_query_709.selected_date=cached_query_708.order_date and cached_query_708.new_client='First' and Order_date>='{{Start Date}}' and Order_date<='{{End Date}}' 
+(select selected_date, numperday from 
+cached_query_709 
+LEFT JOIN (select order_date, count(distinct client_id) as numperday from cached_query_708 where cached_query_708.new_client='First' and Order_date>='{{Start Date}}' and Order_date<='{{End Date}}' group by order_date) g 
+on cached_query_709.selected_date=g.order_date 
 group by selected_date
-having selected_date >= '{{Start Date}}' and selected_date <= '{{End Date}}') g group by selected_date 
+having selected_date >= '{{Start Date}}' and selected_date <= '{{End Date}}') c group by selected_date 
