@@ -1,0 +1,4 @@
+select month, avg(sumrevenue) as avgrevenue from (select strftime('%m', selected_date) as Month, selected_date, sum(monthly_revenue) as sumrevenue from cached_query_709 
+left join cached_query_708 on cached_query_709.selected_date=cached_query_708.order_date and cached_query_708.new_current='New'
+group by selected_date
+ ) g group by month
