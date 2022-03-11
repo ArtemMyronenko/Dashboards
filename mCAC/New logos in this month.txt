@@ -1,0 +1,10 @@
+select sum(numperday) as total_new FROM (select selected_date, strftime('%d', selected_date) as Day,  
+case when sum(numperday) is null then 0 else sum(numperday) end as numperday, case strftime('%m', selected_date) when '01' then '01 / January' when '02' then '02 / February' when '03' then '03 / March' when '04' then '04 / April' when '05' then '05 / May' when '06' then '06 / June' when '07' then '07 / July' when '08' then '08 / August' when '09' then '09 / September' when '10' then '10 / October' when '11' then '11 / November' when '12' then '12 / December' else '' end
+as Month, case when sum(prevnumperday) is null then 0 else sum(prevnumperday) end as prevnumperday from 
+cached_query_709 
+LEFT JOIN (select order_date, count(distinct client_id)  as numperday from cached_query_708 where cached_query_708.new_client='First' group by order_date ) g 
+on cached_query_709.selected_date=g.order_date 
+LEFT JOIN (select order_date, count(distinct client_id)  as prevnumperday from cached_query_708 where cached_query_708.new_client='First' group by order_date ) k 
+on cached_query_709.selected_date=date(k.order_date, '+1 day')
+group by selected_date
+having case when '{{ Month }}' = 'All' then month != 0 else month = '{{ Month }}' end) c
